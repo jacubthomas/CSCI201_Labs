@@ -57,21 +57,7 @@ public class ServerThread extends Thread{
 			ps.print(response);
 			ps.write(Files.readAllBytes(path));
 			ps.flush();
-//			ps.close();
-//			is.close();
 		} catch (FileNotFoundException fnfe) {
-//			System.out.println("check");
-//			String failedResponse = "HTTP/1.0 404 NOT FOUND\r\n Content-type: text/html\r\n"
-//					+ "<html>\r\n"
-//					+ "<head>\r\n"
-//					+ "<meta charset=\"ISO-8859-1\">\r\n"
-//					+ "<title>Insert title here</title>\r\n"
-//					+ "</head>\r\n"
-//					+ "<body>\r\n"
-//					+ "<h1> error 404 </h1> \r\n"
-//					+ "</body>\r\n"
-//					+ "</html>\r\n\r\n";
-//			ps.print(failedResponse);
 			String response =
 					"HTTP /1.1 200 OK\r\n"
 					+ "Content-type: text/html\r\n\r\n";
