@@ -25,7 +25,7 @@
 	border:none;
 }
 .hidden{
-	display:none;
+	display:none !important;
 }
 
 h1{
@@ -90,4 +90,7 @@ h3{
 }
 #master div .fave columns{
 	margin:0;
+}
+#master .columns{
+	margin-bottom:0 !important;
 }
