@@ -96,21 +96,24 @@ public class LatestStock extends HttpServlet {
 				String marketopen = "Open";
 				Date now;
 				try {
-					Date date = new SimpleDateFormat("yyyy-MM-dd").parse(stock.date_timestamp.substring(1,11));
+					Date date = new SimpleDateFormat("yyyy-MM-dd").parse(stock.date_timestamp.substring(1,20));
 					now = new Date();
 					String str_now = new SimpleDateFormat("yyyy-MM-dd").format(now);
 					now = new SimpleDateFormat("yyyy-MM-dd").parse(str_now);
-					
-					System.out.println("date: " + date + ", now: " + now);
 					if(date.compareTo(now) == 0) {
-						String stock_date = stock.date_timestamp.substring(12);
+						String stock_date = stock.date_timestamp.substring(12,20);
 						now = new Date();
 						str_now = new SimpleDateFormat("HH:mm:ss").format(now);
-						System.out.println("st_ts: " + stock_date + ", now_ts: " + str_now);
-						if(!stock_date.substring(0,2).equalsIgnoreCase(str_now.substring(0,2))) {
+						int st_hh = Integer.parseInt(stock_date.substring(0,1));
+						int now_hh = Integer.parseInt(str_now.substring(0,1));
+						if(st_hh > now_hh) {}
+						else if(st_hh == now_hh) {
+							if(Integer.parseInt(stock_date.substring(3,4)) >= Integer.parseInt(str_now.substring(3,4))) {}
+							else {
+								marketopen = "Closed";
+							}
+						} else {
 							marketopen = "Closed";
-						} else if(!stock_date.substring(3,4).equalsIgnoreCase(str_now.substring(3,4))) {
-							marketopen =  "Closed";
 						}
 					} else marketopen =  "Closed";
 					now = new Date();

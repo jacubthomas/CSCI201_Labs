@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,13 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class login
  */
-@WebServlet("/login")
-public class login extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet("/balance")
+public class Balance extends HttpServlet {
+	private static final long serialVersionUID = 10;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("Username");
-		String password = request.getParameter("Password");
+		String uid = request.getParameter("UID");
+		int UID = Integer.parseInt(uid);
 		PrintWriter out = response.getWriter();
 		try {
 		    Class.forName("com.mysql.cj.jdbc.Driver");
@@ -37,21 +38,22 @@ public class login extends HttpServlet {
 		ResultSet rs = null;
 		try {	
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Assignment4?user=root&password=root");
-			String query = "SELECT * from User WHERE Username = ? AND Password = ?";
+			String query = "SELECT Balance, AccountValue FROM User WHERE UID = ?";
 			ps = conn.prepareStatement(query);
-			ps.setString(1, username);
-			ps.setString(2, password);
+			ps.setInt(1, UID);
 			rs = ps.executeQuery();		
 			response.setContentType("application/json");
 			if(rs.next()) {
+				double balance = Double.parseDouble(rs.getString("Balance"));
+				DecimalFormat df = new DecimalFormat("#.##");
+				double AV = rs.getDouble("AccountValue");
+				AV = Double.parseDouble(df.format(AV));
 				out.print("{");
-				out.print("\"Username\":" + "\"" + rs.getString("Username") + "\",");
-				out.println("\"UID\":" + rs.getInt("UID"));
+				out.print("\"Balance\":" + "\"" + df.format(balance) + "\",");
+				out.println("\"AccountValue\":" + AV);
 				out.print("}");
 				out.flush();
-			} else {
-				response.setContentType("text/plain");
-				out.print("Invalid Login");
+				out.close();
 			}
 		}catch(SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());

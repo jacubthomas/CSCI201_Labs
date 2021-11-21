@@ -40,7 +40,7 @@ public class register extends HttpServlet {
 		ResultSet rs = null;
 		try {	
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Assignment4?user=root&password=root");
-			String query = "SELECT * from User WHERE username = ?";
+			String query = "SELECT * from User WHERE Username = ?";
 			ps = conn.prepareStatement(query);
 			ps.setString(1, username);
 			rs = ps.executeQuery();
@@ -61,14 +61,22 @@ public class register extends HttpServlet {
 			ps.execute();		
 			rs = ps.getGeneratedKeys();
 			response.setContentType("application/json");
-			out.println("{");
-			out.println("\"username\":" + "\"" + username + "\",");
-			out.println("\"password\":" + "\"" + password + "\",");
-			out.println("\"email\":" + "\"" + email + "\",");
-			out.println("\"balance\":" + "\"" + balance + "\",");
-			out.println("\"account value\":" + "\"" + accountvalue + "\"");
-			out.println("}");
-			out.flush();
+			
+			query = "SELECT UID from User WHERE Username = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, username);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				out.println("{");
+				out.println("\"username\":" + "\"" + username + "\",");
+				out.println("\"password\":" + "\"" + password + "\",");
+				out.println("\"email\":" + "\"" + email + "\",");
+				out.println("\"balance\":" + "\"" + balance + "\",");
+				out.println("\"account value\":" + "\"" + accountvalue + "\",");
+				out.println("\"UID\":" + "\"" + rs.getInt("UID") + "\"");
+				out.println("}");
+				out.flush();
+			}
 			
 		}catch(SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());

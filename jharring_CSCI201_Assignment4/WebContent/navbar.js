@@ -38,7 +38,6 @@ window.onload = function(){
 		let btn1 = document.getElementById("hs_btn");
 		let btn2 = document.getElementById("ls_btn");
 		let curpage = window.location.pathname;
-		console.log(curpage);
 		if(curpage == "/jharring_CSCI201_Assignment4/index.html"){
 			btn1.classList.add("currentpage");
 			btn2.classList.add("otherpage");
@@ -51,4 +50,14 @@ window.onload = function(){
 			btn2.classList.remove("otherpage");
 		}
 	}
+}
+
+function deleteCookies() {
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
 }

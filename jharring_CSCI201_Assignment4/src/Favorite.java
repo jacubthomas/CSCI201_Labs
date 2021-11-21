@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -14,17 +13,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class login
- */
-@WebServlet("/login")
-public class login extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
+@WebServlet("/favorite")
+public class Favorite extends HttpServlet {
+
+	private static final long serialVersionUID = 6;
+
+	@SuppressWarnings("resource")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("Username");
-		String password = request.getParameter("Password");
+		String ticker = "\"" + request.getParameter("Ticker") + "\"";
 		PrintWriter out = response.getWriter();
+		
 		try {
 		    Class.forName("com.mysql.cj.jdbc.Driver");
 		} 
@@ -37,21 +37,35 @@ public class login extends HttpServlet {
 		ResultSet rs = null;
 		try {	
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Assignment4?user=root&password=root");
-			String query = "SELECT * from User WHERE Username = ? AND Password = ?";
+			String query = "SELECT CID, UID from Company, User WHERE Ticker = ? AND Username = ?";
 			ps = conn.prepareStatement(query);
-			ps.setString(1, username);
-			ps.setString(2, password);
+			ps.setString(1, ticker);
+			ps.setString(2, username);
 			rs = ps.executeQuery();		
-			response.setContentType("application/json");
+			int CID = -1;
+			int UID = -1;
 			if(rs.next()) {
-				out.print("{");
-				out.print("\"Username\":" + "\"" + rs.getString("Username") + "\",");
-				out.println("\"UID\":" + rs.getInt("UID"));
-				out.print("}");
-				out.flush();
-			} else {
-				response.setContentType("text/plain");
-				out.print("Invalid Login");
+				CID = rs.getInt("CID");
+				UID = rs.getInt("UID");
+			}
+			query = "SELECT * from Favorites WHERE UID = ? AND CID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, UID);
+			ps.setInt(2, CID);
+			rs = ps.executeQuery();		
+			boolean already_favorited = false;
+			while(rs.next()) {
+				already_favorited = true;
+			}
+			
+			if(!already_favorited) {
+				query = "INSERT into Favorites (UID, CID)" +
+								" values (?, ?)";
+				ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+				ps.setInt(1, UID);
+				ps.setInt(2, CID);
+				ps.execute();		
+				rs = ps.getGeneratedKeys();
 			}
 		}catch(SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
@@ -74,5 +88,4 @@ public class login extends HttpServlet {
 			}
 		}
 	}
-
 }
