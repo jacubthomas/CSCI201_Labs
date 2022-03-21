@@ -1,0 +1,12 @@
+{
+    "java.project.sourcePaths": [
+        "src/Recursion1",
+        ""
+    ],
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "editor.formatOnSave": true,
+    },
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "/Library/Frameworks/Python.framework/Versions/3.10/bin/black",
+}
